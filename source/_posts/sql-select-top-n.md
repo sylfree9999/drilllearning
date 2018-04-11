@@ -1,7 +1,7 @@
 ---
 title: SQL select top n 
 date: 2018-04-11 17:53:07
-tags: [sql, practice]
+tags: [MSSQL, practice]
 ---
 
 If > SQL 2005,
