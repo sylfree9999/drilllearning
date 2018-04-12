@@ -1,7 +1,7 @@
 ---
 title: SQL identity column increment suddenly jumps
 date: 2018-03-15 16:29:45
-tags: [sql,configuration,issue]
+tags: [MSSQL,configuration,issue]
 ---
 
 SQL SERVER 2016

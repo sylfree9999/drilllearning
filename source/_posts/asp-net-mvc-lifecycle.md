@@ -45,3 +45,26 @@ As you see in the diagram below ResolveRequestCache needs to know the routes to 
 {% asset_img register-routes.png %}
 
 ## HttpHandlers
+
+HttpHandlers are classes that implement `IHttpHandler` and generate a response to `HttpRequest`. There could be httpHandler re-assignment in a life cycle of a request but only on http handler executes and provides response.
+
+### Create HttpHandler:
+
+```
+public class SampleHttlHandler : IHttpHandler
+{
+	public book IsReusable { get{ return false;}}
+	public void ProcessRequest (HttpContext context)
+	{
+		context.Response.Write("<b>This is the response from HttpHandler</b>")
+	}
+}
+```
+
+## HttpModules
+
+HttpModules are classes that implement `IHttpModule` interface and are designed to respond to Life cycle events. In a given Http Life cycle, multiple http modules **can respond to one single request and can also hook into multiple life cycle events**. So they are not tied to any specific event, rather they can act at several places during the life cycle and expose multiple development possibilities.
+
+Features such as <span style="background-color: #FFFF00">**Logging and Authentication**</span> are best examples of wrapping things up in a HttpModule. 
+
+{% asset_img http-modules %}

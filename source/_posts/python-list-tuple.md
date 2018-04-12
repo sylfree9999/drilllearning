@@ -1,8 +1,10 @@
 ---
-title: Python List and Tuple
+title: Python List and Tuple, Dict and Set
 date: 2018-03-15 11:20:11
 tags: [python, concept]
 ---
+
+**Python 3**
 
 **list与tuple都是有序列表**
 
@@ -77,4 +79,62 @@ if __name__ == '__main__':
 >>> t
  
 (1, )
+```
+
+### DICT
+
+使用键值对存储, 且dict的**key是不可变对象**
+
+```python
+>>> d = {'Michael': 95, 'Bob': 75, 'Tracy': 85}
+>>> d['Michael']
+95
+```
+
+为避免key不存在报错：
+
+```python
+>>> 'Thomas' in d
+False
+
+>>> d.get('Thomas') //返回None
+>>> d.get('Thomas', -1)
+
+```
+
+### SET
+
+Set也是一组Key的集合，但不存储value，且Key也不能重复。
+
+```python
+>>> s = set([1,2,3])
+>>> s
+{1,2,3}
+```
+
+**注意传入的参数`[1,2,3]`是一个list，而显示的`{1,2,3}`只是告诉你这个set内部有1，2，3这3个元素，显示的顺序也不表示set是有序的**
+
+重复元素再set中会自动被过滤掉
+
+```python
+>>> s = set([1,1,2,2,3,3,])
+>>> s
+{1,2,3}
+>>> s.add(4)
+>>> s
+{1,2,3,4}
+>>> s.remove(4)
+>>> s
+{1,2,3}
+```
+
+**SET可以看成无序且无重复元素的集合，因此两个set可以做数学意义上的交集、并集等操作**
+
+```python
+>>> s1 = set([1,2,3])
+>>> s2 = set([2,3,4])
+>>> s1 & s2
+{2,3}
+>>> s1 | s2
+{1,2,3,4}
 ```
