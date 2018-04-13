@@ -102,6 +102,9 @@ False
 
 ```
 
+<span style="color: red">注意，dict的添加就是直接赋值就好了，例如
+`d['newkey']='newvalue'`</span>
+
 ### SET
 
 Set也是一组Key的集合，但不存储value，且Key也不能重复。
