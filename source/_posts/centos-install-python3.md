@@ -70,7 +70,7 @@ sudo vi /usr/bin/yum
 # 下载源代码
 $ wget --no-check-certificate https://github.com/pypa/pip/archive/9.0.1.tar.gz
 
-$ tar -zvxf 9.0.1 -C pip-9.0.1    # 解压文件
+$ tar -zvxf 9.0.1.tar.gz    # 解压文件
 
 $ cd pip-9.0.1
 
