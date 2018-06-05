@@ -148,11 +148,11 @@ sudo gdebi shiny-server-1.5.7.907-amd64.deb
 
 * Shiny Server Management
 ```
-start shiny-server
-stop shiny-server
-restart shiny-server
-status shiny-server
-sudo reload shiny-server
+start shiny-server / sudo systemctl start shiny-server.service
+stop shiny-server  / sudo systemctl stop shiny-server.service
+restart shiny-server / sudo systemctl restart shiny-server.service
+status shiny-server  / sudo systemctl status shiny-server.service
+sudo reload shiny-server /sudo systemctl reload shiny-server.service
 ```
 
 * Shiny config file

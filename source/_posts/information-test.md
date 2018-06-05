@@ -1,5 +1,5 @@
 ---
-title: information-test Writing
+title: 论文
 date: 2018-05-28 16:14:07
 tags: [信息系统管理师]
 ---
