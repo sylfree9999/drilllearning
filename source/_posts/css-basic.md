@@ -92,3 +92,84 @@ h1::before{
 }
 ```
 {% asset_img pseudo1.png %}
+
+
+## 居中
+
+```html
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>
+            Container
+        </title>
+        <style type="text/css">
+            body {
+			margin: 0px;
+			font-family: 'Open Sans', sans-serif;
+		}
+		.bg {
+			position: absolute;
+			height: 100%;
+			width:100%;
+		}
+		.centered {
+ 		 position: fixed;
+ 		 width: 100%;
+		 top: 40%;
+		}
+
+		.centered div a div {
+			display: block;
+			width: 120px;
+			text-align: center;
+			font-size: 12px;
+		}
+
+		.centered a {
+			text-decoration: none;
+		}
+
+
+		.in {
+			display: inline-block;
+			text-align: center;
+			margin: 0px 10px 0px;
+		}
+        </style>
+    </head>
+    <body>
+        <div class="bg">
+            <div class="centered in">
+                <div class="in">
+                    <a href="" target="_blank">
+                        <img src="https://omni.annalect.com/static/i/ico/lg/digital-inventory.png">
+                            <div>
+                                Campaign Reporting
+                            </div>
+                        </img>
+                    </a>
+                </div>
+                <div class="in">
+                    <a href="" target="_blank">
+                        <img src="https://omni.annalect.com/static/i/ico/lg/digital-inventory.png">
+                            <div>
+                                Campaign Reporting
+                            </div>
+                        </img>
+                    </a>
+                </div>
+                <div class="in">
+                    <a href="" target="_blank">
+                        <img src="https://omni.annalect.com/static/i/ico/lg/digital-inventory.png">
+                            <div>
+                                Campaign Reporting
+                            </div>
+                        </img>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
+```
