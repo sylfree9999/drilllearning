@@ -125,6 +125,10 @@ x:可执行（可不可以当一个程序来运行）
 `chmod -R 700 xxxDirectory`
 `chown -R angela:angela aaa/`更改所有者，必须用root才能改
 
+
+修改文件名
+`rename .repo .repo.bak *`	对当前目录下所有以.repo结尾的文件，改为以.repo.bak结尾的文件
+
 ##### 基本用户管理
 
 `useradd angela`	添加用户
@@ -282,7 +286,19 @@ x:可执行（可不可以当一个程序来运行）
 	`yum remove httpd`	删除httpd
 	`yum repolist`	看一下现在的repo有哪些
 
-4，手动安装MySQL rpm包
+4-0，yum安装MySQL
+	```
+	sudo yum install mysql-server
+	sudo /sbin/chkconfig --levels 235 mysqld on
+	sudo service mysqld start
+	sudo mysql_secure_installation
+
+	//登陆
+	mysql -u root -pXXX
+	```
+
+
+4-1，手动安装MySQL rpm包
 
 	0，查询rpm包
 		`rpm -qa`
@@ -306,7 +322,7 @@ x:可执行（可不可以当一个程序来运行）
 		```
 	7，启动MySQL服务，然后初始化MySQL
 		```
-		service mysql start
+		service mysqld start
 		/usr/bin/mysql_secure_installation
 		```
 	8，测试MySQL

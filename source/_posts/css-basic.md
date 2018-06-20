@@ -11,6 +11,7 @@ tags: [css, concept]
 2,	`inline`只占其content的尺寸，如果没有content，就不会显示
 3，	`inline-block`是inline的布局，就是都挤在一行（对外的表现），对内表现为block,就是可以像block元素一样设置宽高等（盒模型数据）
 
+
 ## Position
 1,	`static` 就是默认的元素定位
 2,	`relative` 相对于<span style="color: red;font-weight: bold;">自己原本的位置</span>,比方说几次方这个东西，就可以用relative来做
@@ -26,6 +27,8 @@ tags: [css, concept]
 	left : 1px;
 }
 ```
+
+<!--more-->
 
 3,	`absolute`	完全绝对定位，一样可以设置`top left bottom right`,但是这些值是以其找到的最近的非static父元素为基准。 如果没有这样的父元素， 它就会以`<html>`为父元素.
 
@@ -95,6 +98,8 @@ h1::before{
 
 
 ## 居中
+
+{% asset_img center.png %}
 
 ```html
 <!DOCTYPE html>
