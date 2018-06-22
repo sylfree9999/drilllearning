@@ -1,7 +1,7 @@
 ---
 title: ASP.NET Identity 原理
 date: 2018-03-25 21:09:31
-tags: [ASP.NET, Identity, Concept]
+tags: [.NET, Identity, concept]
 ---
 
 转自:
