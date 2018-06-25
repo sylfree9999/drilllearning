@@ -117,14 +117,14 @@ public class iPhone8
 
 	protected virtual void OnPriceChanged(PriceChangeEventArgs e)
 	{
-		if (this.PriceChange ！= null)
+		if (this.PriceChange != null)
 		{
 			this.PriceChange.Invoke(this, e);
 		}
 	}
 
 	private decimal price;
-	public decimal PriceChange
+	public decimal Price
 	{
 		get {return price;}
 		set 
@@ -151,7 +151,7 @@ public class EventArgs
 	public EventArgs();
 }
 
-
+//PriceChangeEventArgs
 public class PriceChangeEventArgs: EventArgs
 {
 	public int Id {get;set;}

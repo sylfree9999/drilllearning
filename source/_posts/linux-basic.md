@@ -166,6 +166,17 @@ x:可执行（可不可以当一个程序来运行）
 
 `halt`	关机
 
+`mkisofs -o /home/linuxlookup/example.iso /source/directory/`	生成iso文件
+
+`createrepo /var/www/html/repo`	生成repodata链接文件，否则本地yum无法安装
+
+开机挂载光盘
+```
+vi /etc/fstab
+/dev/cdrom              /mnt/cdrom              iso9660 defaults        0 0
+```
+`ln -s /mnt/cdrom ./centos` 生成软链接
+
 ##### ssh免密登陆
 `ssh-keygen`	生成密钥对
 
@@ -334,3 +345,12 @@ x:可执行（可不可以当一个程序来运行）
 	`tar -zxvf apacheXXXXX`
 	`cd apacheXXX/bin`
 	`./startup.sh`
+
+6，安装httpd服务器
+	如果只是做简单的静态web服务器，不需要装tomcat,nginx这种，只要使用httpd就可以了
+	```
+	sudo yum install httpd
+	cd /var/www/html
+	touch hello.html
+	```
+	然后访问的时候直接ip:port/hello.html就可以访问了
