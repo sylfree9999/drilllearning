@@ -59,14 +59,19 @@ private int GetNothing()
 Action act = new Action(this.DoNothing);
 Action<int,string,int,string> act2 = null;
 ```
-####Func -> 带返回值，没有参数的泛型委托，注意，最后一个泛型类型代表返回类型
+####Func -> 带返回值的泛型委托，注意，最后一个泛型类型代表返回类型
 ```c#
-Func<int> fun1 = new Func<int>(this.GetNothing);
-Func<int,string> fun2 = null; //接受一个int类型的参数，返回值为string
+Func<int> fun1 = new Func<int>(this.GetNothing);//返回一个int类型
+Func<int,string> fun2 = null; //接受一个int类型的参数，返回类型为string
 ```
 ####多播委托 -> 
 +=表示向一个委托实例里面添加多个方法，形成方法链，invoke的时候按添加顺序执行
 -=表示向一个委托实例里面移除方法，从方法链尾部开始匹配，遇到第一个完全吻合的，移除且只移除一个；没有匹配的不报错
+
+**如果是用lambda表达式来定义方法，那么永远都无法-=，因为编译器碰到lambda表达式，会自动生成一个委托，都是不同的实例**
+
+**多播委托<span style="color: red">不适用于带返回值的委托</span>>带返回值的委托，因为到后面只会拿最后一个委托的返回值**
+
 ```c#
 Action act = new Action(this.DoNothing);
 act += this.DoNothing;
