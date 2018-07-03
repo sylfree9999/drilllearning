@@ -154,10 +154,19 @@ install.packges("V8")
 ```
 sudo apt-get install -y libxml2-dev
 
-sudo su - -c "R -e \"install.packages(c('shiny','shinydashboard','shinyjs','quanteda', 'dygraphs', 'rhandsontable', 'keras','DEoptim','RSQLite','reshape2','mlbench','future','promises','shinyWidgets','devtools','Hmisc','XML','DT'), repos='https://mirrors.tuna.tsinghua.edu.cn/CRAN/')\""
+sudo su - -c "R -e \"install.packages(c('shiny','shinydashboard','shinyjs','quanteda', 'dygraphs', 'rhandsontable','keras','DEoptim','RSQLite','reshape2','mlbench','future','promises','shinyWidgets','devtools','Hmisc','XML','DT','V8','shinyBS'), repos='https://mirrors.tuna.tsinghua.edu.cn/CRAN/')\""
 
+install.packages(c('shiny','shinydashboard','shinyjs','quanteda', 'dygraphs', 'rhandsontable','keras','DEoptim','RSQLite','reshape2','mlbench','future','promises','shinyWidgets','devtools','Hmisc','XML','DT','V8','shinyBS'),repos='https://mirrors.tuna.tsinghua.edu.cn/CRAN/')
 
-sudo su - -c "R -e \"devtools::install_github('madlogos/recharts')\""
+sudo apt-get install unzip
+
+R
+library(devtools)
+options(unzip="internal")
+devtools::install_github('madlogos/recharts')
+
+install.packages('rredis')
+
 sudo su - -c "R -e \"devtools::install_github('lchiffon/REmap')\""
 ```
 
@@ -202,7 +211,9 @@ In a web browser, navigate to the app’s address. Replace example.com with your
 ```
 example.com:3838/Example
 ```
-You should see your app displayed:
+
+Create a symbolic link to the actual file system
+<span style="color:red">sudo ln -s /opt/shiny-server/actually_file_location /srv/shiny-server/symbolic_file</span>
 
 
 ## Configure Shiny Server

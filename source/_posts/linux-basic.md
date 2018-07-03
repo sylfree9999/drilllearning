@@ -266,10 +266,10 @@ vi /etc/fstab
 		gpgcheck=1
 		enabled=0
 		gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-CentOS-7
+		
 		```
 
-
-	然后更新软件包缓存 ```sudo yum makecache```
+然后更新软件包缓存 `sudo yum makecache`
 
 1,	在安装jdk的时候如果出现`/lib/ld-linux.so.2: bad ELF interpreter: No such file or directory`
 	
