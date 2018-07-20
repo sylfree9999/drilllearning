@@ -63,6 +63,10 @@ cat testfile | sort | uniq -c //-c显示重复次数
 3 hello
 2 world
 ```
+取出处于ESTABLISHED状态的端口号
+```
+netstat -an | grep ':4001\|:4002\|:4003\|:4004' | grep ESTABLISHED | awk {'print $4'} | uniq | cut -d ':' -f 2 
+```
 
 ## sed
 ### 删除：d命令
@@ -85,6 +89,8 @@ awk工作流程：读入有'\n'换行符分割的一条记录，然后将记录�
 
 `cat /etc/passwd | awk -F ':' 'BEGIN {print "name,shell"} {print $1","$7} END {print "endtest,/bin/bash"}'`
 awk还可以分Begin 中间 End三个部分
+
+`lxc list | awk 'NR > 2 { print $6}'`去除首行，拿取第6列
 
 ```
 [root@ip-172-31-7-202 ec2-user]# cat /etc/passwd | awk -F ':' 'BEGIN {print "name,shell"} {print $1","$7} END {print "endtest,/bin/bash"}'

@@ -210,3 +210,25 @@ echo $total, $?;
 ```
 ## 脚本调试
 `sh -vx helloWorld.sh` 只会展现所有的执行状态，不会停
+
+## 模拟用户输入
+```bash
+auto_ssh_copy_id() {
+	expect -c "set timeout -1;
+		spawn ssh-copy-id $1;
+		expect {
+			*(yes/no)* {send -- yes\r;exp_continue;}
+			*assword:* {send -- $2\r;exp_continue;}
+			eof		   {exit 0;}
+		}
+	";
+}
+
+
+ssy_copy_id_to_all() {
+	for SERVER in $SERVERS
+	do
+		auto_ssh_copy_id $SERVER $PASSWORD
+	done	
+}
+```
