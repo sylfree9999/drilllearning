@@ -81,3 +81,10 @@ deploy:
   repo: https://github.com/sylfree9999/sylfree9999.github.io
   branch: master
   message: "Site updated: 2018-03-14"
+
+search:
+  path: search.xml
+  field: post
+  format: html
+  limit: 10000 
+ 
