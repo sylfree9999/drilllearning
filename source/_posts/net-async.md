@@ -35,7 +35,7 @@ private void DoSomethingLong(string name)
 
 ## 异步多线程如何控制顺序
 
-回调，这种方法十分稳定，一定会在委托执行完和ihouzhixing
+回调，这种方法十分稳定，一定会在委托执行完后再执行
 ```c#
 private void btnAsync_Click(object sender, EventArgs e)
 {
