@@ -15,6 +15,7 @@ sudo nano /etc/ssh/sshd_config
 PasswordAuthentication no
 sudo systemctl reload sshd
 ```
+<!--more-->
 
 ## Configure LXD
 ```shell

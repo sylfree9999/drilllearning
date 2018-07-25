@@ -32,6 +32,7 @@ private void DoSomethingLong(string name)
 	Console.WriteLine($"********DoSomethingLong End {Thread.CurrentThread.ManagedThreadId.ToString("00")}");
 }
 ```
+<!--more-->
 
 ## 异步多线程如何控制顺序
 

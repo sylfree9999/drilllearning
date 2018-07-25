@@ -27,6 +27,7 @@ private void btnThreads_Click(object sender, EventArgs e)
 	//thread.Join();//做等待用的，执行thread的这个线程会等待thread线程
 }
 ```
+<!--more-->
 
 ### 用Thread实现回调且不卡界面
 等同于BeginInvoke的回调
@@ -387,7 +388,7 @@ Console.WriteLine(IntList.Count());
 IntList集合也是不安全，引用类型，同时多个线程对它访问，也会有可能被覆盖的;
 
 ### 怎么样让其正确？
-方法一，lock，用变量来保证，**但是lock的方法块里面是单线程的**
+方法一，lock，用变量来保证，**但是lock的方法块里面是单线程的**,所以一定要保证不需要lock的逻辑放在lock之外
 
 如果每个实例想要单独的锁定，那么就用一个**private object**，这样只有实例了你这个类的才能用
 
