@@ -116,8 +116,8 @@ Task的优势：
 TaskFactory taskFactory = Task.Factory;
 {
 	taskFactory.StartNew(()=>{this.DoSomethingLong("btnTask_Click001");});
-taskFactory.StartNew(()=>{this.DoSomethingLong("btnTask_Click002");});
-taskFactory.StartNew(()=>{this.DoSomethingLong("btnTask_Click003");});
+	taskFactory.StartNew(()=>{this.DoSomethingLong("btnTask_Click002");});
+	taskFactory.StartNew(()=>{this.DoSomethingLong("btnTask_Click003");});
 }
 ```
 
@@ -420,7 +420,7 @@ for(int i=0; i<10000;i++)
 
 ## Await/Async
 1，await和async要成对使用才有效果
-2，
+2，await后面就是Task的回调
 
 ```C#
 private static async void NoReturn()
@@ -437,9 +437,189 @@ private static async void NoReturn()
 	//主线程到此就返回了，下面都是子线程来执行
 	await task;
 
-	//加入await之后，这一段由子线程执行，其实就是封装成一个委托，在task之后形成回调，相当于task.ContinueWith()
+	//相当于await后面的都是回调！！！
+
+
+	//加入await之后，这一段就被封装成一个委托，在task之后形成回调，相当于task.ContinueWith()
 	//但是这个回调的线程是不确定的，有可能是主线程，也有可能是子线程，也有可能是其他线程！
 	Console.WriteLine($"NoReturn after await, ThreadId={Thread.CurrentThread.ManagedThreadId}")
 }
 ```
 {%asset_img await1.png %}
+
+### 带返回值的await/async
+1，注意，虽然函数是返回Task<long>,但是return的却是一个long类型
+
+```c#
+private static async Task<long> SumAsync()
+{
+	Console.WriteLine($"SumAsync Start, ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+	long result=0;
+
+	await Task.Run(()=>
+	{
+		for(int k=0; k<10;k++)
+		{
+			Console.WriteLine($"SumAsync {k} await Task.Run ManagedThreadId={Thr ead.CurrentThread.ManagedThreadId}");
+			Thread.Sleep(1000);
+		}
+		for(long i=0; i < 999999999; i++)
+		{
+			result += i;
+		}
+	});
+	Console.WriteLine($"SumAsync end ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+	return result;
+}
+
+//Caller
+{
+	Tasl<int> t = SumAsync();
+	Console.WriteLine($"Main Thread Task SumAsync, ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+	long lResult = t.Result;
+	t.Wait();//与long lResult = t.Result是相同的，都会线程等待
+}
+```
+上面的这种写法与下面相同
+```c#
+private static Task<int> SumFactory()
+{
+	Console.WriteLine($"SumFactory Start, ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+	TaskFactory taskFactory = new TaskFactory();
+	Task<int> iResult = taskFactory.StartNew<int>(()=>
+	{
+		Thread.Sleep(3000);
+		Console.WriteLine($"SumFactory ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+		return 123;
+	});
+	Console.WriteLine($"SumFactory end ManagedThreadId={Thread.CurrentThread.ManagedThreadId}");
+	return iResult;
+}
+```
+
+如果是有多个await，碰到第一个await,主线程返回，然后子线程A会把下面的所有当成回调，所以子线程A碰到第二个await，会返回，第三个await由子线程B来执行，知道返回return。
+
+## 子线程来更改主线程的UI
+如果这样写，会报错
+```c#
+if(c is lable)
+{
+	Label lbl = (Lable)c;
+	if(lbl.Name.Contains("Blue"))
+	{
+		taskFactory.StartNew(()=>{
+			this.ProcessLableBlue(lbl);});
+	}
+}
+
+private void ProcessLableBlue(Lable lbl)
+{
+	int index = new RandomHelper().GetNumber(0,15);
+	//InvalidOperationException!
+	lbl.Text = this.BlueNums[index];
+}
+```
+
+### 子线程修改UI的方法
+```c#
+private void UpdateLbl(Lable lbl, string text)
+{
+	//线程安全的考虑  
+	if(lbl.InvokeRequired)
+	{
+		//Invoke方法代表把这个Action交给UI线程来执行
+		this.Invoke(new Action(() =>
+		{
+			lbl.Text = text;
+		}));
+	}else
+	{
+		lbl.Text = text;
+	}
+}
+```
+### 如果有多个子线程同时工作，且要求每个子线程的结果不能相同
+1，注意了，虽然这里在lock里面又递归调用了ProcessLable方法，但是并不会死锁，因为这个锁有一个作用域的概念，你递归的时候还是在同一个作用域里面，所以并不会死锁
+
+```c#
+private static object UpdateLblLock = new object();
+private void ProcessLable(Lable lbl)
+{
+	if(lbl.Name.Contains("Blue"))
+	{
+		int index = new RandomHelper().GetNumber(0,15);
+		string text = this.BlueNums[index];
+		this.UpdateLbl(lbl,text);
+	}
+	else
+	{
+		int index = new RandomHelper.GetNumber(0,33);
+		string text = this.RedNums[index];
+		lock(UpdateLblLock)
+		{
+			List<string> numberUsedList = this.GetUsedNums();
+			if(numberUsedList.Contains(text))
+			{
+				return; 
+			}
+			this.UpdateLbl(lbl,text);
+		}
+	}
+}
+```
+
+### 要求点击Stop之后，MessageBox Show结果
+
+如果写在btnStop_Click中就会死掉，为什么呢？
+1，当IsGoOn=false的时候，就会等待ProcessLable结束
+2，ProcessLable是怎么结束的呢？调用Invoke，而这个Invoke是主线程在调用的
+3，但是这个时候主线程在Task.WaitAll()
+4，所以死掉
+```c#
+private bool IsGoOn = true;
+//caller
+{
+	taskList.Add(taskFactory.StartNew(()=>
+	{
+		while(IsGoOn)
+		{
+			this.ProcessLable(lbl);
+		}
+	}));
+}
+
+//btnStop_Click
+{
+	this.IsGoOn = false;
+	this.btnStart.Enabled = true;
+	this.btnStop.Enabled = false;
+
+	//死掉了，主线程等着任务执行完，但是任务还在找主线程去干活
+	Task.WaitAll(this.taskList.ToArray());
+	this.MessageShow();
+}
+```
+
+那么该怎么做？
+**通过回调的形式结束！**
+```c#
+//caller 
+{
+	foreach(Control c in this.gbo.Controls)
+	{
+		if(c is Label)
+		{
+			Label lbl = (Lable)c;
+			taskList.Add(taskFactory.StartNew(()=>
+			{
+				while(IsGoOn)
+				{
+				this.ProcessLable(lbl);
+			}
+			}));
+		}
+	}
+	this.btnStop.Enabled = true;
+	taskFactory.ContinueWhenAll(taskList.ToArray(), tList=>this.MessageShow());
+}
+```
