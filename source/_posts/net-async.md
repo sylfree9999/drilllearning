@@ -52,7 +52,7 @@ private void btnAsync_Click(object sender, EventArgs e)
 ```
 
 等待
-1, while这里是主线程来做的，所以会咯界面
+1, while这里是主线程来做的，所以会卡界面
 2, EndInvoke可以拿到之前委托的结果 
 ```c#
 private void btnAsync_Click(object sender, EventArgs e)

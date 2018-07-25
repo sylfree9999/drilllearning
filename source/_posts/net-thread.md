@@ -417,3 +417,29 @@ for(int i=0; i<10000;i++)
 }
 ```
 方法二，让其没有冲突，从数据上隔离开，比方说这个线程访问前100个，另一个线程访问后面200个
+
+## Await/Async
+1，await和async要成对使用才有效果
+2，
+
+```C#
+private static async void NoReturn()
+{
+	//主线程执行
+	Console.WriteLine($"NoReturn before await, ThreadId={Thread.CurrentThread.ManagedThreadId}");
+	TaskFactory taskFactory = new TaskFactory();
+	Task task = taskFactory.StartNew(()=>
+	{
+		Console.WriteLine($"NoReturn task before sleep, ThreadId={Thread.CurrentThread.ManagedThreadId}");
+		Thread.Sleep(3000);
+		Console.WriteLine($"NoReturn task after sleep, ThreadId={Thread.CurrentThread.ManagedThreadId}");
+	});
+	//主线程到此就返回了，下面都是子线程来执行
+	await task;
+
+	//加入await之后，这一段由子线程执行，其实就是封装成一个委托，在task之后形成回调，相当于task.ContinueWith()
+	//但是这个回调的线程是不确定的，有可能是主线程，也有可能是子线程，也有可能是其他线程！
+	Console.WriteLine($"NoReturn after await, ThreadId={Thread.CurrentThread.ManagedThreadId}")
+}
+```
+{%asset_img await1.png %}
