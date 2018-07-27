@@ -104,6 +104,22 @@ public class GenericMethod<T>
 1. 	基类约束，可以使用基类里面的属性和方法
 2. 	基类约束，要求类型参数必须是基类或者其子类，所以如果你调用GenericMethod.Show(japanese)就会报错，因为它不属于People类
 3. 	基类约束，如果where后面跟多个类型，这些类型属于and关系，必须同时满足才行
+
+**You can only put one class name and several interfaces to one 'where' constraint!**
+```c#
+where T1: Supplier, IConstractor, IComparable, new()
+```
+
+约束  |   说明
+--- |   ---
+T:struct    |   类型参数必须是值类型。可以指定处Nullable以外的任何值类型
+T:class |   类型参数必须是引用类型，包括任何类、接口、委托或数组类型
+T:new()     |   类型参数必须具有无参数的公共构造函数。当与其他约束一起使用时，new()约束必须最后指定。
+T:<基类名> |   类型参数必须是指定的基类或派生自指定的基类
+T:<接口名称> |  类型参数必须是指定的接口或实现指定的接口。可以指定多个接口约束。约束接口也可以是泛型的。
+T:U     |   为T提供的类型参数必须是为U提供的参数或派生自为U提供的参数。这称为裸类型参数。
+
+
 ```c#
 public staic void Show<T>(T instance)
 where T: People
