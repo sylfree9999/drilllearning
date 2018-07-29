@@ -43,6 +43,8 @@ People teacher = new Teacher();
 ```c#
 public abstract class ParentClass
 {
+	public int age = 70;
+
 	public void CommonMethod()
 	{
 		Console.WriteLine("ParentClass CommonMethod");
@@ -67,6 +69,8 @@ public abstract class ParentClass
 
 public class ChildClass: ParentClass
 {
+	public int age  = 18;
+
 	//这里隐藏父类的CommonMethod,并没有覆盖掉
 	public new void CommonMethod()
 	{
@@ -89,6 +93,8 @@ public class ChildClass: ParentClass
 public static void Test()
 {
 	ParentClass instance = new ChildClass();
+	//父类，age=70
+	Console.WriteLint(instance.age);
 	//父类,编译的时候决定了普通方法的调用，只根据等号左边来看，ChildClass里面的new一点用都没有
 	instance.CommonMethod();
 	//子类，虽然最终调用的是父类，运行的时候决定了虚方法的调用

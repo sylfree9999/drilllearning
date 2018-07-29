@@ -404,3 +404,112 @@ public class ProxySubject: ISubject
 	}
 }
 ```
+
+###  装饰器模式
+1，声明一个你需要用的变量
+2，在构造函数中把你需要的变量初始化
+```c#
+public class BaseStudentDecorator: AbstractStudent
+{
+	//没有用继承的方式，用的是组合的方式，通过构造函数初始化变量
+	private AbstractStudent _student = null;
+	public BaseStudentDecorator(AbstractStudent student)
+	{
+		this._student = student;
+	}
+
+	public override void Study()
+	{
+		this._student.Study();
+	}
+}
+
+public class StudentPayDecorator: BaseStudentDecorator
+{
+	public StudentPayDecorator(AbstractStudent student)
+	:base(student)
+	{
+
+	}
+
+	public override void Study()
+	{
+		Console.WriteLine("Pay");
+		base.Study();
+	}
+}
+
+//caller
+{
+	AbstractStudent student = new StudentVip()
+	{
+		Id = 381,
+		Name = "Bird"
+	};
+
+	//BaseStudentDecorator decorator = new BaseStudentDecorator();
+	//把左边BaseStudentDecorator换成AbstractDecorator
+	//AbstractStudent decorator = new BaseStudentDecorator();
+	//decorator.Study();
+	student = new BaseStudentDecorator(student);
+	student.Study();//输出的是vip学习
+
+	//StudentPayDecorator studentPayDecorator = new StudentPayDecorator(decorator);
+	//AbstractStudent studentPayDecorator = new StudentPayDecorator(decorator);
+	//studentPayDecorator.Study();
+
+	//也可以写成如下，这个时候的student为BaseStudentDecorator
+	student = new StudentPayDecorator(student);
+	student.Study();//输出先是pay，然后BaseStudentDecorator的Study,即输出vip学习
+
+	//所以之后如果你想给一个对象加一些行为，都可以像这样写
+	//AOP的雏形
+	student = new BaseStudentDecorator(student);
+	student = new StudentRegDecorator(student);
+	student = new StudentPayDecorator(student);
+	//最终打出来的是付费，注册，vip学习
+	student.Study();
+}
+```
+
+## 设计模式 - 行为型设计模式：关注对象和行为的分离
+通俗来讲，就是把方法写在哪里更适合
+哪里变化 就封装哪里，让别人传进来，自己不去完成
+
+### 观察者模式
+```c#
+private List<IObserver> _observerList = new List<IObserver>();
+public void Add(IObserver observer)
+{
+	this._observerList.Add(observer);
+}
+public void Remove(IObserver observer)
+{
+	this._observerList.Remove(observer);
+}
+
+public void MiaoObserver()
+{
+	foreach(var observer in this._observerList)
+	{
+		observer.Action();
+	}
+}
+
+//上面这就类似于event,event就是委托的一个实例
+public event Action MiaoHandler;
+public void MiaoEvent()
+{
+	if(MiaoHandler != null)
+	{
+		foreach(Action item in this.MiaoHandler.GetInvocationList())
+		{
+			item.Invoke();
+		}
+		//this.MiaoHandler();
+	}
+}
+
+```
+
+
