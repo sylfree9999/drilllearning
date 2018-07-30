@@ -512,4 +512,124 @@ public void MiaoEvent()
 
 ```
 
+### 责任链模式
+1，行为型设计模式经常会有这种Context类，用来表示上下文.因为行为经常是各种类乱跑的
+2，下一个审批人不是由当前类来指定的，而是由调用者来指定的，所以当前类就不需要承担指定下一个类的
+```c#
+public class ApplyContext
+{
+	public int Id {get;set;}
+
+	public string Name {get;set;}
+
+	public int Hour {get;set;}
+
+	public string Description {get;set;}
+
+	public bool AuditResult{get;set;}
+
+	public string AuditRemark {get;set;}
+}
+
+public abstract class BaseAuditor
+{
+	protected BaseAuditor _nextAuditor {get;private set;}
+
+	public void SetNext(BaseAuditor nextAuditor)
+	{
+		this._nextAuditor = nextAuditor;
+	}
+
+	protected void AuditNext(ApplyContext context)
+	{
+		if(this._nextAuditor == null)
+		{
+			context.AuditResult = false;
+			context.AuditRemark = "Denied!";
+		}
+		else
+		{
+			this._nextAuditor.Audit(context);
+		}
+	}
+
+	public string Name {get;set;}
+	public abstract void Audit(ApplyContext context);
+}
+
+public class PM : BaseAuditor
+{
+	public override void Audit(ApplyContext context)
+	{
+		context.AuditRemark += "PM process...";
+		if(context.Hour <= 8)
+		{
+			context.AuditResult = true;
+			context.AuditRemark = "Enjoy!";
+		}
+		else
+		{
+			base.AuditNext(context);
+		}
+	}
+}
+
+public class AuditManager
+{
+	private static BaseAuditor AuditProcess = null;
+	static AuditorManager()
+	{
+		//甚至这一部分都可以改成简单工厂，用配置文件构建链表结构
+		PM pm = new PM()
+		{
+			Name = "aa"
+		};
+		Charge charge = new Charge()
+		{
+			Name = "bb"
+		};
+		Manager manager = new Manager()
+		{
+			Name = "cc"
+		};
+
+		pm.SetNext(charge);
+		charge.SetNext(manager);
+		AuditProcess = pm;
+	}
+
+	public static BaseAuditor GetAuditor()
+	{
+		return AuditProcess;
+	}
+}
+
+//caller
+{
+	
+
+	//这一步还可以进一步封装，用一个类专门来返回process
+	PM pm = new PM()
+	{
+		Name = "aa"
+	};
+	Charge charge = new Charge()
+	{
+		Name = "bb"
+	};
+	Manager manager = new Manager()
+	{
+		Name = "cc"
+	};
+
+	pm.SetNext(charge);
+	charge.SetNext(manager);
+	pm.Audit(context);
+
+	//用专门的类来初始化，将对对象的依赖降到最低
+	BaseAuditor auditor = AuditorManager.GetAuditor();
+	auditor.Audit(context);
+}
+```
+
 
