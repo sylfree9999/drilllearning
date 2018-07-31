@@ -45,7 +45,7 @@ public class Lumia:AbstractPhone
 }
 
 ```
-
+<!--more-->
 其实中间层也可以写成一个泛型
 ```c#
 public void Call<T>(T phone) where T : AbstractPhone
@@ -411,7 +411,7 @@ public class ProxySubject: ISubject
 ```c#
 public class BaseStudentDecorator: AbstractStudent
 {
-	//没有用继承的方式，用的是组合的方式，通过构造函数初始化变量
+	//用的是组合的方式，通过构造函数初始化变量
 	private AbstractStudent _student = null;
 	public BaseStudentDecorator(AbstractStudent student)
 	{
@@ -472,7 +472,7 @@ public class StudentPayDecorator: BaseStudentDecorator
 }
 ```
 
-## 设计模式 - 行为型设计模式：关注对象和行为的分离
+## 设计模式-行为型设计模式：关注对象和行为的分离
 通俗来讲，就是把方法写在哪里更适合
 哪里变化 就封装哪里，让别人传进来，自己不去完成
 
@@ -606,8 +606,6 @@ public class AuditManager
 
 //caller
 {
-	
-
 	//这一步还可以进一步封装，用一个类专门来返回process
 	PM pm = new PM()
 	{
