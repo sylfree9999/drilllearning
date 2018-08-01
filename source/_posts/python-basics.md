@@ -492,6 +492,10 @@ def myspiralmatrix(matrix):
 print(mySpiralOrder(matrix2))
 
 #方法二，LeetCode上面某个大神的写法：
+# 这里第一个matrix and是为了保证当所有元素都pop掉后，不会在空matrix上面再pop
+# matrix.pop()的操作是直接改在matrix上的，所以后面的递归是基于新的matrix上面
+# 后面的递归spiralOrder([*zip(*matrix)][::-1])生成的是一个剔除原先第一行元素后逆序的matrix
+
 def spiralOrder(matrix):
     return matrix and [*matrix.pop(0)] + spiralOrder([*zip(*matrix)][::-1])
 
