@@ -146,6 +146,22 @@ for i in range(start,end,step):
 	print(i)  
 ```
 
+## 循环for/else
+<span style="color: red">`for` loop也有一个`else`</span>
+`else` 是在loop正常结束后执行的，也就是说这个loop没有`break`
+
+下面这个是一个基本的
+```python
+for item in container:
+	if search_something(item):
+		#Found it!
+		process(item)
+		break
+	else:
+		#Didn't find anything
+		not_found_in_container()
+```
+
 ## 函数
 ```python
 #默认参数
@@ -219,26 +235,23 @@ if __name__ == "__main__":
     print (a)  # 3
 ```
 
-**********************练习***********************
+##**********************练习***********************
 
 1，求100以内的素数
 ```python
 #找素数,1不是素数，最小的质数/素数为2
 #素数的概念，除了1和它本身外，不能被其他自然数整除
-primeArray = []
+
 def findPrimeNumber(num):
-    for i in range(2,num+1):
-        if i ==2:
-            primeArray.append(i)
-        else:
-            for j in range(2,i+1):
+    for i in range(1,num+1):
+        if i > 1:
+            for j in range(2,i):
                 if i%j == 0:
                     break
-                else:
-                    primeArray.append(i)
+            else:
+                 print(i)
 
-findPrimeNumber(5)
-print(primeArray)
+findPrimeNumber(100)
 ```
 
 2，冒泡排序
@@ -254,4 +267,235 @@ def bubbleSort(array):
         print(array)
 
 bubbleSort([54,26,100,17,77])
+```
+
+## 容器
+1，list列表，索引从0开始，列表的数据项不需要具有相同的类型
+2，tuple元组，只读列表
+3，dist字典
+4，set集合，是一个无序不重复的数组
+
+5，not XX 和 is None不是一回事，not XX代表其还是在内存分配空间了的
+6，切片，切出一个子数组
+7，生成器，只有用到的时候才去计算，不用的时候不算,用next/for来循环,非常省内存
+8，迭代器，如果是Iterable,则可以用for来循环，如果是Iterator则说明是生成器 
+```python
+#list/tuple基本操作
+li = [1,2,3,'tete',[1,2,3],{1:'one',2:'two'}]
+print(type(li))# class list
+
+# 元素访问
+print(li[0])
+#倒数第一个元素
+print(li[-1])
+
+# 查找元素位置
+print(li.index('tete')) #3
+print(li.index([1,2,3])) #4
+print(li.index(-1)) # error
+
+# 添加元素
+l_a = [1,2]
+l_a.append(4)
+l_a.append(5)
+#如果想要一次性加多个元素进去，就需要用extend,否则如果用append，会把其作为一个list，添加到原list中
+l_b = [6,7,8]
+l_a.extend(l_b)
+
+# 删除元素
+del(li[-1]) # del(list[index])
+
+# 判断容器是否为空
+
+l_a = []
+if not l_a:
+	print('Empty') # print this
+if l_a is None:
+	print('None')
+
+# 遍历
+for i in li:
+	print(i)
+for i in range(len(li)):
+	print(li[i])
+
+# 元组
+t = (1,2,3,'456')
+t[0]='a' # error,不可以修改
+
+# 字典
+d = {'a':1,'b':2,1:'one',2:'two'}
+print(d[1]) #根据key来做访问
+# 判断元素是否存在，是判断key是否存在
+print('c' in d) # false
+print(1 in d) # true
+# 添加
+# 删除
+del(d[2])
+# 遍历
+for key in d:
+	print(d[key])
+
+for key, value in d.items():
+	print(key,value)
+
+keys = d.keys()
+print(keys)
+
+# set
+s_a = set([1,2,2,3,4,5,6])
+s_b = set([4,5,6,7,8])
+print(s_a)# {1,2,3,4,5,6}
+
+# 判断元素是否存在
+print(5 in s_a)
+# 并集
+print(s_a | s_b) #{1，2，3，4，5，6，7，8}
+print(s_a.union(s_b))
+# 交集
+print(s_a & s_b)
+print(s_a.intersection(s_b)) #生成一个新的set {4，5，6}
+# 差集(a - a&b )
+pprint(s_a - s_b)
+print(s_a.difference(s_b)) #{1,2,3}
+# 对称差(A|B) - (A&B)，把两个集合相同的元素去除
+print(s_a ^ s_b)
+print(s_a.symmetric_diff(s_b)) #{1,2,3,7,8}
+# 添加
+s_a.add('x')
+s_a.update([4,5,60,70])
+# 删除，因为set没有索引，要直接删值
+s_a.remove(70)
+# 遍历
+for i in s_a:
+	print i
+
+# 切片[start:end:step] >= start * < end
+li = list(range(10)) #[0,1,2,3,4,5,6,7,8,9]
+print(li[2:5]) # [3,4,5]
+print(li[:4]) # [0,1,2,3]
+print(li[0:10:3])#[0,3,6,9]
+print(li[5:-2])#[5,6,7]
+print(li[9:0:-1])#[9,8,7,6,5,4,3,2,1]
+print(li[9::-1])#[9,8,7,6,5,4,3,2,1,0]
+
+# 列表推导
+#生成10个偶数
+li = [i*2 for i in range(10)]
+
+#二维数组浅拷贝
+li_2d = [[0]*3]*3
+print(li_2d)
+li_2d[0][0] = 100
+print(li_2d)#这样写会每个元素的首元素变成100，因为*3这样写是浅拷贝，每个引用的是同一个空间
+
+#二维数组深拷贝
+li_2d = [[0]*3 for i in range(3)]
+li_2d[0][0] = 100
+
+s = {x for x in range(10) if x%2 == 0}
+print(s) #s=set
+
+d = {x:x%2 == 0 for x in range(10)}
+print(d)#d=dict
+
+
+# 生成器
+square_generator = (x*x for x in range(50000))
+print(next(square_generator))
+for i in range(10):
+	print(next(square_generator))
+
+# 迭代器
+from collections import Iterable
+from collections import Iterator
+
+print(isinstance([1,2,3],Iterable)) #true
+print(isinstance([1,2,3],Iterator)) #false
+print(isinstance({},Iterable))#true
+#
+
+```
+
+##**********************练习***********************
+```python
+#任意给定一个值，在一个数组中找到两个数，相加=给定值，返回这两个数的索引，如果没有，返回-1
+
+def find_two_sums(ls, target):
+    for i in range(len(ls) - 1):
+        for j in range(i+1, len(ls)):
+            if ls[i] + ls[j] == target:
+                return i, j
+
+    return -1, -1
+
+
+print(find_two_sums([1, 3, 2, 6, 18, 4, 2], 3))
+
+#螺旋矩阵，给定一个m*n要素的矩阵，按照螺旋顺序，返回该矩阵的所有要素
+
+#方法一，我自己写的一个笨方法，只用到上面学的内容，应该是符合所有常识人理解
+matrix2 = [[1,2,3,4],[5,6,7,8],[9,10,11,12]]
+
+def myspiralmatrix(matrix):
+	if len(matrix) < 1:
+		return []
+	#宽
+    m = len(matrix[0])
+    #长
+    n = len(matrix)
+    matrix3 = matrix
+    ls = []
+
+    #以横着读一批+竖着第一批作为一批，最多只有可能走m/n遍就能遍历完
+    if m >= n:
+        t = n
+    else:
+        t = m
+
+    for tt in range(1, t + 1):
+
+    	# 如果是奇数次遍历，那么就是顺时针读
+        if tt % 2 != 0:
+        	#横：读出matrix第一个元素的所有值
+            ls.extend(matrix3[0][:m])
+            #竖：除了matrix第一个元素之外，遍历剩下n-1个元素，只读出来第m-1个
+            for k in range(1, n):
+                ls.append(matrix3[k][m - 1])
+
+            #重置数组，将下回要遍历的数组宽，长都-1，重新生成新的数组
+            m = m - 1
+            n = n - 1
+            tmp = matrix3
+            matrix3 = []
+            for em in range(1, n + 1):
+                matrix3.append(tmp[em][:m])
+
+        # 如果是偶数次遍历，那么就是逆时针读        
+        else:
+            # 逆序打印这个时候matrix的最后一行
+            ls.extend(matrix3[n - 1][m::-1])
+            # 逆序竖着打印除了最后一行元素之后的所有元素的第一个元素
+            for i in range(n - 1, 0, -1):
+                ls.append(matrix3[i - 1][0])
+            #重置数组，将下回要遍历的数组宽，长都-1，重新生成数组
+            m = m - 1
+            n = n - 1
+            tmp = matrix3
+            matrix3 = []
+            for em in range(0, n):
+                matrix3.append(tmp[em][1:])
+    return ls
+
+
+print(mySpiralOrder(matrix2))
+
+#方法二，LeetCode上面某个大神的写法：
+def spiralOrder(matrix):
+    return matrix and [*matrix.pop(0)] + spiralOrder([*zip(*matrix)][::-1])
+
+#用栈实现队列：支持push(element),pop()和top()方法。pop和top都应该返回第一个元素的值
+
+
+#矩阵转换，给定矩阵A，令矩阵B里每个元素B[i][j]的值等于A[0][0]到A[i][j]子矩阵元素的和
 ```
