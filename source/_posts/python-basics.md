@@ -278,7 +278,8 @@ bubbleSort([54,26,100,17,77])
 5，not XX 和 is None不是一回事，not XX代表其还是在内存分配空间了的
 6，切片，切出一个子数组
 7，生成器，只有用到的时候才去计算，不用的时候不算,用next/for来循环,非常省内存
-8，迭代器，如果是Iterable,则可以用for来循环，如果是Iterator则说明是生成器 
+8，迭代器，如果是Iterable,则可以用for来循环，如果是Iterator则说明是生成器
+
 ```python
 #list/tuple基本操作
 li = [1,2,3,'tete',[1,2,3],{1:'one',2:'two'}]
@@ -494,8 +495,38 @@ print(mySpiralOrder(matrix2))
 def spiralOrder(matrix):
     return matrix and [*matrix.pop(0)] + spiralOrder([*zip(*matrix)][::-1])
 
+
+
 #用栈实现队列：支持push(element),pop()和top()方法。pop和top都应该返回第一个元素的值
 
 
 #矩阵转换，给定矩阵A，令矩阵B里每个元素B[i][j]的值等于A[0][0]到A[i][j]子矩阵元素的和
+```
+
+## 容器补充知识点
+1，`*list`的含义， `*` operator unpacks an argument list. It allows you to call a function with the list items as individual arguments.
+	For instance, if `sys.argv` is ["./foo", "bar", "quux"], `main(*sys.argv)` = `main("./foo","bar","quux")`
+2，`zip` takes `n` number of iterables and returns list of tuples. `ith` element of the tuple is created using the `ith` element from each of the iterables.
+```python
+list_a = [1, 2, 3]
+list_b = [4, 5, 6]
+
+zipped = zip(a, b) # Output: Zip Object. <zip at 0x4c10a30>
+
+len(zipped) # TypeError: object of type 'zip' has no len()
+
+zipped[0] # TypeError: 'zip' object is not subscriptable
+
+list_c = list(zipped) #Output: [(1, 4), (2, 5), (3, 6)]
+
+list_d = list(zipped) # Output []... Output is empty list becuase by the above statement zip got exhausted.
+
+```
+
+```python
+matrix2 = [[1, 2, 3, 4] [5, 6, 7, 8] [9, 10, 11, 12]]
+print(*matrix2) # [1, 2, 3, 4] [5, 6, 7, 8] [9, 10, 11, 12] 这里不是一个list，是三个list对象
+print([*zip(matrix2)]) #[([1, 2, 3, 4],), ([5, 6, 7, 8],), ([9, 10, 11, 12],)]
+print([*zip(list(matrix2))]) #[([1, 2, 3, 4],), ([5, 6, 7, 8],), ([9, 10, 11, 12],)] 与上面相同，因为list(matrix2)还是只有一个对象
+print([*zip(*matrix2)]) #[(1, 5, 9), (2, 6, 10), (3, 7, 11), (4, 8, 12)]
 ```
