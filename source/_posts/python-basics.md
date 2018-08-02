@@ -146,6 +146,21 @@ for i in range(start,end,step):
 	print(i)  
 ```
 
+## AND/OR
+1，AND/OR**不一定只会返回True/False**
+2，**AND** return the first Falsey value if there are any, else return the last value in the expression
+3，**OR** return the first Truthy value if there are any, else return the last value in the expression
+
+```python
+[] and [] + [1,2] # returns []
+#Spotted,[] and [] + [1,2] is actually this: [] and ([] + [1,2]),你必须把后面的+[1,2]与前面的[]看作是一个整体
+
+[] + [1,2] # returns [1,2]
+
+10 or 7 - 2 # returns 10,同理，10 or (7 - 2)要看成这种形式
+```
+
+
 ## 循环for/else
 <span style="color: red">`for` loop也有一个`else`</span>
 `else` 是在loop正常结束后执行的，也就是说这个loop没有`break`
@@ -492,7 +507,7 @@ def myspiralmatrix(matrix):
 print(mySpiralOrder(matrix2))
 
 #方法二，LeetCode上面某个大神的写法：
-# 这里第一个matrix and是为了保证当所有元素都pop掉后，不会在空matrix上面再pop
+# 这里第一个matrix and是为了保证当所有元素都pop掉后，会返回一个空matrix,不会再做后面的pop和递归操作
 # matrix.pop()的操作是直接改在matrix上的，所以后面的递归是基于新的matrix上面
 # 后面的递归spiralOrder([*zip(*matrix)][::-1])生成的是一个剔除原先第一行元素后逆序的matrix
 
@@ -505,6 +520,22 @@ def spiralOrder(matrix):
 
 
 #矩阵转换，给定矩阵A，令矩阵B里每个元素B[i][j]的值等于A[0][0]到A[i][j]子矩阵元素的和
+# 除了第一行和第一列，其余B矩阵里面所有的元素都可以表示为
+# B[i][j] = B[i][j-1] + B[i-1][j] - B[i-1][j-1] + A[i][j]
+
+def matrixTransform(A):
+    B = A
+    for i in range(1,len(A[0])):
+        B[0][i] += B[0][i-1]
+    for i in range(1,len(A),1):
+        B[i][0] += B[i-1][0]
+
+    for i in range(1,len(A),1):
+        for j in range(1, len(A[0]), 1):
+            B[i][j] += B[i-1][j] + B[i][j-1] - B[i-1][j-1]
+    return B
+
+
 ```
 
 ## 容器补充知识点
@@ -528,9 +559,10 @@ list_d = list(zipped) # Output []... Output is empty list becuase by the above s
 ```
 
 ```python
-matrix2 = [[1, 2, 3, 4] [5, 6, 7, 8] [9, 10, 11, 12]]
+matrix2 = [[1, 2, 3, 4], [5, 6, 7, 8], [9, 10, 11, 12]]
 print(*matrix2) # [1, 2, 3, 4] [5, 6, 7, 8] [9, 10, 11, 12] 这里不是一个list，是三个list对象
 print([*zip(matrix2)]) #[([1, 2, 3, 4],), ([5, 6, 7, 8],), ([9, 10, 11, 12],)]
 print([*zip(list(matrix2))]) #[([1, 2, 3, 4],), ([5, 6, 7, 8],), ([9, 10, 11, 12],)] 与上面相同，因为list(matrix2)还是只有一个对象
+print([zip(*matrix2)]) # [<zip object at 0x00935350>]
 print([*zip(*matrix2)]) #[(1, 5, 9), (2, 6, 10), (3, 7, 11), (4, 8, 12)]
 ```
