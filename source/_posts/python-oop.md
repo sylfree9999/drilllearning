@@ -130,3 +130,106 @@ print(obj1.a,obj2.a,A.a)
 del obj1.a
 print(obj1.a)
 ```
+
+## python 装饰器
+1，主要用于AOP
+2，简单版，等同于`use_logging(foo())`
+```python
+def use_logging(func):
+
+    def wrapper():
+        logging.warn("%s is running" % func.__name__)
+        return func()
+    return wrapper
+
+@use_logging
+def foo():
+    print("i am foo")
+
+foo()
+```
+3，带业务函数参数\*args,\*\*kwargs
+```python
+def wrapper(*args, **kwargs):
+        logging.warn("%s is running" % func.__name__)
+        return func(*args, **kwargs)
+    return wrapper
+```
+4，装饰器本身带参数
+这种写法本质上就是把原本real_decorator这个装饰器再在外面包一层装饰器
+```python
+def makeHtmlTag(tag,*args,**kwds):
+    def real_decorator(fn):
+        css_class = " class '{0}'".format(kwds["css_class"]) if "css_class" in kwds else ""
+
+        def wrapped(*args, **kwds):
+            return "<"+tag+css_class+">"+fn(*args,**kwds)+"</"+tag+">"
+        return wrapped
+    return real_decorator
+
+@makeHtmlTag(tag="b", css_class="bold_css")
+@makeHtmlTag(tag="i", css_class="italic_css")
+def hello(*s,**kwds):
+    return "hello world!{0}{1}".format(s,kwds)
+
+print(hello('spencer','shao',name="ss",surname="shao"))
+#结果为：<b class 'bold_css'><i class 'italic_css'>hello world!('spencer', 'shao'){'name': 'ss', 'surname': 'shao'}</i></b>
+```
+5，类装饰器
+注意，这里调用顺序会先是decorator的init函数，
+
+```python
+class makeHtmlTagClass(object):
+	def __init__(self, tag, css_class=""):
+		print("inside makeHtmlTagDecorator.__init.__()")
+		self._tag = tag
+		self._css_class = " class '{0}'".format(css_class) if css_class != "" else ""
+
+	def __call__(self, fn):
+		def wrapped(*args, **kwargs):
+			print("inside makeHtmlTagDecorator.__call__()")
+			return "<"+self._tag+self._css_class+">"+fn(*args,**kwargs)+"</"+self._tag+">"
+		return wrapped
+
+
+@makeHtmlTagClass(tag="b", css_class="bold_css")
+@makeHtmlTagClass(tag="i", css_class="italic_css")
+def hello(name):
+	return "Hello, {}".format(name)
+print("Finished decorating hello()")
+
+print(hello("Baby"))
+
+#输出结果顺序为：
+#inside makeHtmlTagDecorator.__init.__()
+#inside makeHtmlTagDecorator.__init.__()
+#Finished decorating hello()
+#inside makeHtmlTagDecorator.__call__()
+#inside makeHtmlTagDecorator.__call__()
+#<b class 'bold_css'><i class 'italic_css'>Hello, Baby</i></b>
+
+```
+6，装饰器副作用
+原本的函数变成了一个wrapper函数，所以会丢失原本函数的一些元信息，比方说__name__, \_\_doc__之类 
+这个时候可以用Python的functools
+```python
+from functools import wraps
+def hello(fn):
+	@wraps(fn)
+	def wrapper():
+		print("Hi,{0}".format(fn.__name__))
+		fn()
+		print("Bye,{0}".format(fn.__name__))
+	return wrapper
+
+@hello
+def foo():
+	print("Foo")
+
+foo()
+```
+
+## __slots__
+
+1，可以限制class实例能够添加哪些属性
+2，\_\_slots__只对当前类的实力起作用，对继承的子类不求作用
