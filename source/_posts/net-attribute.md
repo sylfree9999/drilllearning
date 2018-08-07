@@ -1,4 +1,4 @@
----
+0---
 title: net-attribute
 date: 2018-06-21 17:09:23
 tags: [.NET, concept]

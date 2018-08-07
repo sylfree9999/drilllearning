@@ -35,12 +35,14 @@ obj2 = Foo()
 1，直接在构造函数中用self.xx赋值会导致xx外界也能访问
 2，`self.__name = name`,这样写就是告诉python `__name`不能被外界访问
 3，如果既要保证安全，又要能被外部更改呢？用getter+setter
+4，python中，如果变量名类似`__x__`,以双下划线开头和结尾的，是特殊变量，特殊变量可以直接访问，不是private变量
+5，如果变量名是以一个下划线开头的`_x`，这样的实例变量外部是可以访问的，但是按照约定俗称的规定，这类变量**虽然可以访问，但是请视为私有变量，不要随意访问**
 ```python
 class Student:
 	def __init__(self,name,age):
 		self.name = name #用self赋值在类中别的方法也能直接访问的到
 		self.age = age
-		self.__name2 = name
+		self.__name = name
 		self.__age = age
 	
 	def detail(self):
@@ -66,7 +68,7 @@ class PrimaryStudent(Student):
 	def lol(self):
 		print("lalalala")
 
-class CpllegeStudent(Student):
+class CollegeStudent(Student):
 	#这里改写了父类的构造函数
 	def __init__(self,name,age,gender):
 		self.__name = name
@@ -233,3 +235,141 @@ foo()
 
 1，可以限制class实例能够添加哪些属性
 2，\_\_slots__只对当前类的实力起作用，对继承的子类不求作用
+
+## property
+
+## 类的特殊方法和定制
+
+### __str__
+1，返回用户看到的字符串
+2，convert an object to a string
+3，与toString()十分类似，也可以override这个方法
+ 
+```python
+class MyClass:
+	def __init__(self, name):
+		self.name = name
+
+	def __str__(self):
+		return "Hello" + self.name
+
+print(MyClass('Tome')) # Hello Tome 
+# 如果没有def __str__，则默认打印的是<__main__.MyClass object at 0x109afb190>
+```
+
+### str()与repr()
+1，Example of str()
+```python
+s = 'Hello, Geeks.'
+print str(s)
+print str(2.0/11.0)
+```
+output:
+```
+Hello, Geeks.
+0.181818181818
+```
+
+2，Example of repr()
+```python
+s = 'Hello, Geeks.'
+print repr(s)
+print repr(2.0/11.0)
+```
+output:
+```
+'Hello, Geeks.'
+0.18181818181818182
+```
+
+3，Difference:
+	** str() is used for creating output for end users/ repr() is mainly used for debugging and development
+	** repr() shows a representation that has all information about the object/ str() is sued to show a representation that is useful for printing the object
+	** Both of them can be overriden for any class and there are minor differences.If both are defined, function defined in __str__ is used.
+
+
+### __iter__
+1，如果一个类想要被用于`for ... in`循环，就必须实现一个`__iter__()`方法，该方法返回一个迭代对象，在`def __iter__(self)`里实力本身就是迭代对象，所以返回自己`self`即可，主要是在`__next__`里面写逻辑，知道遇到`StopIteration`错误时退出循环
+
+```python
+class Fib100:
+	def __init__(self):
+		self._1, self._2 = 0, 1
+
+	def __iter__(self):
+		return self
+
+	def __next__(self):
+		self._1, self._2 = self._2, self._1 + self._2
+		if self._1 > 100:
+			raise StopIteration()
+		return self._1
+
+for i in Fib100():
+	print(i)
+```
+
+### __getitem__
+1，如果想实现下标访问，就需要实现`__getitem__`
+```python
+class Fib(object):
+    def __getitem__(self, n):
+        a, b = 1, 1
+        for x in range(n):
+            a, b = b, a + b
+        return a
+
+f = Fib()
+f[0]
+```
+
+### __call__
+```python
+class MyClass:
+	def __call__(self):
+		print("U can call cls() directly")
+
+cls = MyClass()
+cls()
+
+print(callable(cls))
+print(callable(max))
+```
+
+## 元类MetaClass
+1，python是动态语言，是在运行时编译的
+2，用`type`动态生成一个类,第二个参数是继承自什么，一定要显式写成元组类型
+```python
+def init(self, name):
+	self.name = name
+
+def say_hello(self):
+	print('Hello {0}'.format(self.name))
+
+Hello = type('Hello',(object, ), dict(__init__ = init, hello = say_hello))
+
+h = Hello('Tom')
+h.hello()
+```
+3，metaclass就是为了控制类的创建过程，就是告诉用户我这个class有哪些方法，存在attrs的表里面，attrs就是函数和方法的一个表
+```python
+def add(self, value):
+	self.append(value)
+
+class ListMetaClass(type):
+	def __new__(cls, name, bases, attrs):
+		attrs['add'] = add
+		attrs['name'] = 'Jerry'
+		return type.__new__(cls, name, bases, attrs)
+
+class MyList(list, metaclass = ListMetaClass):
+	pass
+
+mli = MyList()
+mli.add(1)
+mli.add(2)
+
+print(mli.name) # Jerry
+print(mli) # [1,2]
+
+```
