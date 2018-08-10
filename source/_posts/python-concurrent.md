@@ -302,10 +302,11 @@ lines = sc.textFile("stormofswords.csv")
 counts = lines.flatMap(lambda x: x.split(','))\
 			.map(lambda x: (x, 1))
 			.reduceByKey(add)
-output = counts.collect()
+output = counts.collect() #这个时候才开始计算
 output = filter(lambda x:not x[0].isnumeric(), sorted(output, key=lambda x:x[1], reverse=True))
 for (word,count) in output[:10]:
 	print("{0}:{1}".format(word, count))
 
 sc.stop()
 ```
+
