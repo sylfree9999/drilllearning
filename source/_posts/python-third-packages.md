@@ -193,10 +193,12 @@ print(time.time() - t)
 t = time.time()
 D = np.zeros([n,n])
 #d[k] = X[k][i] -X[k][j]
-#d[i,j] = d[0]<sup>2</sup>
+#d[i,j] = d[0]^2 + d[1]^2
 for i in range(n):
 	for j in range(i+1, n):
+		#把第i列和第j列相减
 		d = X[:, i] - X[:, j]
+		#然后做矩阵乘法的运算
 		D[i,j] = np.dot(d,d)
 		D[j,i] = D[i,j]
 print(time.time()-t)
@@ -209,6 +211,154 @@ print (time.time() - t)
 ```
 
 ## 数据处理分析pandas
+
+### 数据结构Series
+1，Series是一种类似于一维数组的对象，它由一组数据（各种NumPy数据类型）以及一组与之相关的数据标签（即索引）组成
+2，Series的字符串表现形式为：索引在左边，值在右边
+3，默认是数字索引
+```python
+from pandas import Series
+
+print("用数组生成series")
+obj = Series([5,7,-1,3])
+print(obj)
+
+print("指定Series的index")
+obj2 = Series([5,7,-1,3], index = ['a','b','c','d'])
+print(obj2)
+
+print("使用字典生成Series")
+dData = {'ohio':3999,"texas":2000,"oregon":123123}
+obj3 = Series(dData)
+print(obj3)
+```
+### 数据结构DataFrame
+1，DataFrame是一个表格型数据结构，它含有一组有序的列，每列可以试不同的值的类型（数值、字符串、布尔值等）
+2，DataFrame既有行索引，也有列索引，可以被看做由Series组成的字典（共用同一个索引）。
+```python
+import numpy as np
+from pandas import Series, DataFrame
+
+print('用字典生成DataFrame，key为列的名字。')
+data = {'state':['Ohio', 'Ohio', 'Ohio', 'Nevada', 'Nevada'],
+        'year':[2000, 2001, 2002, 2001, 2002],
+        'pop':[1.5, 1.7, 3.6, 2.4, 2.9]}
+print(DataFrame(data))
+print(DataFrame(data, columns = ['year', 'state', 'pop'])) # 指定列顺序
+
+print '指定索引，在列中指定不存在的列，默认数据用NaN。'
+frame2 = DataFrame(data,
+                    columns = ['year', 'state', 'pop', 'debt'],
+                    index = ['one', 'two', 'three', 'four', 'five'])
+print frame2
+print frame2['state']
+print frame2.year
+print frame2.ix['three']
+frame2['debt'] = 16.5 # 修改一整列
+print frame2
+frame2.debt = np.arange(5)  # 用numpy数组修改元素
+print frame2
+print
+
+print '赋值给新列'
+frame2['eastern'] = (frame2.state == 'Ohio')  # 如果state等于Ohio为True
+print frame2
+print frame2.columns
+print
+
+```
+3，数据的清理用drop
+```python
+import numpy as np
+from pandas import Series, DataFrame
+
+print 'Series根据索引删除元素'
+obj = Series(np.arange(5.), index = ['a', 'b', 'c', 'd', 'e'])
+new_obj = obj.drop('c')
+print new_obj
+print obj.drop(['d', 'c'])
+print
+
+print 'DataFrame删除元素，可指定索引或列。'
+data = DataFrame(np.arange(16).reshape((4, 4)),
+                  index = ['Ohio', 'Colorado', 'Utah', 'New York'],
+                  columns = ['one', 'two', 'three', 'four'])
+print data
+print data.drop(['Colorado', 'Ohio'])
+print data.drop('two', axis = 1) #axis=1代表处理的是列
+print data.drop(['two', 'four'], axis = 1) #原始数据并没有被删除
+
+```
+
+### Pandas Data Selection
+{%asset_img pandas-selections.png %}
+准备数据
+```python
+import pandas as pd
+import random
+
+data = pd.read_csv('https://s3-eu-west-1.amazonaws.com/shanebucket/downloads/uk-500.csv')
+data['id'] = [random.randint(0,1000) for x in range(data.shape[0])]
+data.head(5)
+```
+
+1, By row numbers(.iloc)
+"iloc" in pandas is used to **select rows and columns by number**
+`data.iloc[<row selection>,<column selection>]`
+
+注意是开区间，你选择[1:5]返回的是1,2,3,4
+```python
+# Single selections using iloc and DataFrame
+# Rows:
+data.iloc[0] # first row of data frame (Aleshia Tomkiewicz) - Note a Series data type output.
+data.iloc[1] # second row of data frame (Evan Zigomalas)
+data.iloc[-1] # last row of data frame (Mi Richan)
+# Columns:
+data.iloc[:,0] # first column of data frame (first_name)
+data.iloc[:,1] # second column of data frame (last_name)
+data.iloc[:,-1] # last column of data frame (id)
+
+# Multiple row and column selections using iloc and DataFrame
+data.iloc[0:5] # first five rows of dataframe
+data.iloc[:, 0:2] # first two columns of data frame with all rows
+data.iloc[[0,3,6,24], [0,5,6]] # 1st, 4th, 7th, 25th row + 1st 6th 7th columns.
+data.iloc[0:5, 5:8] # first 5 rows and 5th, 6th, 7th columns of data frame (county -> phone1).
+```
+
+2, By label or by a conditional statement(.loc)
+	a) Selecting rows by label/index
+	b) Selecting rows with a boolean/conditional lookup
+
+注意用loc就不是开区间，而是闭区间了，Veness行和email列都会被选出来
+```python
+data.set_index("last_name", inplace=True)
+data.head()
+
+data.loc['Andrade':'Veness', 'city':'email']
+
+#Conditional lookup
+data.loc[data['first_name'] == 'Erasmo',['company_name','email']]
+# Select rows where the email column ends with 'hotmail.com', include all columns
+data.loc[data['email'].str.endswith("hotmail.com")]   
+
+# Select rows with last_name equal to some values, all columns
+data.loc[data['first_name'].isin(['France', 'Tyisha', 'Eric'])] 
+```
+在这里注意了
+如果
+`data.loc[data['first_name'] == 'Erasmo','email']`
+即以<span style="color: red">.loc[<selection>,String]</span>形式，返回的是一个Series
+
+如果
+`data.loc[data['first_name'] == 'Erasmo',['email']`
+即以<span style="color: red">.loc[<selection>,List]</span>形式，返回的是一个DataFrame
+
+{%asset_img loc1.png %}
+
+
+
+
+
 ## 可视化matplotlib/seaborn
 ```python
 import numpy as np; np.random.seed(0)
