@@ -361,6 +361,7 @@ div>p{
     margin:10px;
 }
 ```
+{%asset_img flex-example1.png%}
 
 # CSS Units
 ## Absolute Lengths
