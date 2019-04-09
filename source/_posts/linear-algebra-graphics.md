@@ -39,6 +39,8 @@ MeetMath:[Ref: https://mp.weixin.qq.com/s?__biz=MzAxNzg3MTE3Ng==&mid=2247485798&
 
 ```shear```的意思是保持x轴不变，然后转y轴
 
+<!--more-->
+
 ## 矩阵相乘
 对于矩阵$\begin{bmatrix}a & b\\\ c&d \end{bmatrix}$$\begin{bmatrix} e&f\\\ g&h \end{bmatrix}$,其实就是相当于先做了$\begin{bmatrix} e&f\\\ g&h \end{bmatrix}$矩阵变换，然后做了$\begin{bmatrix}a & b\\\ c&d \end{bmatrix}$矩阵变换，所以得出的结果就是：
 {%asset_img matrix_multiplication.png %}
@@ -251,20 +253,20 @@ $\vec{p}$的长度就是$\vec{v}$和$\vec{w}$所形成的平行四边形的面�
 
 对于空间中任意一个向量$\begin{bmatrix} x \\\ y \\\ z \end{bmatrix}$
 ,其与$\vec{v}$与$\vec{w}$形成的平行四边形的体积可以表示成：
-$$f(\begin{bmatrix} x\\\y\\\z \end{bmatrix}) = det(\begin{bmatrix} x&v_1&w_1 \\\ y&v_2&w_2 \\\ z&v_3&w_3 \end{bmatrix})$$
+$$f(\begin{bmatrix} x\\ y\\ z \end{bmatrix}) = det(\begin{bmatrix} x&v_1&w_1 \\\ y&v_2&w_2 \\\ z&v_3&w_3 \end{bmatrix})$$
 
 这个函数一个重要特征就是，这是个线性函数：(平行，等距，固定原点)
 1.易知，当u取原点时，这一变换会使之缩到原点，因为这个平行六面体已经没有高了.
 2.根据相似的原理，当u在一条直线上运动时，这个平行六面体的体积与u的长度成正比
 3.所以在这条直线上等距取u时，这一变换会使得这些点在数轴上等距分布
 
-一旦你知道这个是线性的，我们就可以运用对偶性来解决问题，也就是f()部分可以改成一个1x3矩阵与向量$\begin{bmatrix} x \\\ y \\\z \end{bmatrix}$的线性变换：
+一旦你知道这个是线性的，我们就可以运用对偶性来解决问题，也就是f()部分可以改成一个1x3矩阵与向量$\begin{bmatrix} x \\ y \\z \end{bmatrix}$的线性变换：
 
 $$\begin{bmatrix} ?&?&? \end{bmatrix}\begin{bmatrix} x \\\ y \\\ z \end{bmatrix} = det(\begin{bmatrix} x&v_1&w_1 \\\ y&v_2&w_2 \\\ z&v_3&w_3 \end{bmatrix})$$
 
 并且由于对偶性（也就是线性变换可以用这个矩阵的倒置与特定向量(x,y,z)来做点积来表示）
 
-$$\begin{bmatrix} ?\\\?\\\? \end{bmatrix} \cdot \begin{bmatrix} x \\\ y \\\ z \end{bmatrix} = det(\begin{bmatrix} x&v_1&w_1 \\\ y&v_2&w_2 \\\ z&v_3&w_3 \end{bmatrix})$$
+$$\begin{bmatrix} ?\\\?\\\? \end{bmatrix} \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix} = det(\begin{bmatrix} x&v_1&w_1 \\\ y&v_2&w_2 \\\ z&v_3&w_3 \end{bmatrix})$$
 
 所以说我们要找的就是这个特殊的3D向量$\vec{p}$，使得向量p与其他任一向量(x,y,z)的点积等于一个3x3矩阵的行列式(这个矩阵第一列为这个任一向量(x,y,z),其余两列分别为v和w的坐标)
 
@@ -293,9 +295,9 @@ $$
 {%asset_img cross-product-geo1.png%}
 
 这个时候我们来看这个公式：
-$$\vec{p} \cdot \begin{bmatrix} x \\\ y \\\ z \end{bmatrix} = det(\begin{bmatrix} x&v_1&w_1 \\\ y&v_2&w_2 \\\ z&v_3&w_3 \end{bmatrix})$$
+$$\vec{p} \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix} = det(\begin{bmatrix} x&v_1&w_1 \\ y&v_2&w_2 \\ z&v_3&w_3 \end{bmatrix})$$
 就可以看成：
-$$\vec{p} \cdot \begin{bmatrix} x \\\ y \\\ z \end{bmatrix} = \text{(Area of the parallelogram)} \times \text{(Component of }\begin{bmatrix} x\\\y\\\z \end{bmatrix} \text{perpendicular to v and w)}$$
+$$\vec{p} \cdot \begin{bmatrix} x \\ y \\ z \end{bmatrix} = \text{(Area of the parallelogram)} \times \text{(Component of }\begin{bmatrix} x\\y\\z \end{bmatrix} \text{perpendicular to v and w)}$$
 其中左边代表**向量(x,y,z)映射到$\vec{p}$的长度**再$\times \vec{p}$的长度，右边(Component....)刚好与“向量(x,y,z)映射到$\vec{p}$的长度”的意义相同，所以**$\vec{p}$的长度也就是(Area of the parallelogram)**
 
 ## 基变换

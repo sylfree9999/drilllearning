@@ -27,6 +27,8 @@ $\sec\alpha = \frac{1}{x},\csc\alpha = \frac{1}{y}$
 **sec pronounces secant**
 **csc pronounces cosecant**
 
+<!--more-->
+
 ### 同角三角函数基本关系
 可以由上面的式子直接推导：
 $\tan\alpha\cot\alpha=1$
